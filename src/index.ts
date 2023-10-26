@@ -8,10 +8,10 @@ class School {
 
 class Direction {
   levels : Array<number|string> = [];
+  _name:string;
 
-  constructor(private _name:string) {
-    //this._name = name;
-
+  constructor(name:string) {
+    this._name = name;
   }
 
   get name():string {
@@ -25,10 +25,13 @@ class Direction {
 
 class Level {
   groups : Array<unknown> = [];
+  name:string;
+  _name:string;
+  _program:string;
 
-  constructor(private _name:string, private _program:string) {
-    //this.name = name;
-    //this._program = _program;
+  constructor(name:string, program:string) {
+    this.name = name;
+    this._program = program;
   }
 
   get getName():string {
@@ -46,10 +49,12 @@ class Level {
 
 class Group {
   _students : Array <Student> = [];
+  levelName:string;
+  directionName:string;
 
-  constructor(private directionName:string,private levelName:string) {
-    //this.directionName = directionName;
-    //this.levelName = levelName;
+  constructor(directionName:string, levelName:string) {
+    this.directionName = directionName;
+    this.levelName = levelName;
   }
 
   get students():Array<Student> {
@@ -72,11 +77,14 @@ class Group {
 class Student {
   grades : {[subject: string]: number} = {};
   attendance : Array<boolean> = [];
+  firstName:string;
+  lastName:string;
+  birthYear:number;
 
-  constructor(private firstName:string,private lastName:string,private birthYear:number) {
-    //this.firstName = firstName;
-    //this.lastName = lastName;
-    //this.birthYear = birthYear;
+  constructor(firstName:string,lastName:string,birthYear:number) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.birthYear = birthYear;
   }
 
   get fullName():string {
@@ -116,5 +124,5 @@ class Student {
   }
 }
 
-//const newStudent = new Student('Andrii','Dobronos',2000)
-//console.log(newStudent)
+const newStudent = new Student('Andrii','Dobronos',2000)
+console.log(newStudent)

@@ -1,128 +1,258 @@
 class School {
-  directions: Array<unknown> = [];
+  // implement 'add area', 'remove area', 'add lecturer', and 'remove lecturer' methods
 
-  addDirection(direction:unknown):void {
-    this.directions.push(direction);
+  _areas : Array<IArea> = [];
+  _lecturers : Array<string | number> = []; // Name, surname, position, company, experience, courses, contacts
+
+  get areas(): Array<IArea>{
+    return this._areas;
+  }
+
+  get lecturers(): Array<string | number>{
+    return this._lecturers;
+  }
+
+  addArea(area:IArea):void {
+    this._areas.push(area);
+  }
+
+  removeArea(area:IArea):void {
+    if (this._areas.includes(area) ) {
+      this._areas.slice(this._areas.indexOf(area),1);
+    }
+  }
+
+  addLecturer(lecturer:string | number):void {
+    this._lecturers.push(lecturer);
+  }
+
+  removeLecturer(lecturer:string | number):void {
+    if (this._lecturers.includes(lecturer)) {
+      this._lecturers.slice(this._lecturers.indexOf(lecturer),1);
+    }
   }
 }
 
-class Direction {
-  levels : Array<number|string> = [];
-  _name:string;
+interface IArea {
+  _levels: Array<ILevel> ;
+  _name: string;
+  _fields: unknown;
 
-  constructor(name:string) {
+  constructor(name: string): void;
+
+  get fields(): unknown;
+
+  addLevel(level: ILevel): void;
+
+  removeLevel(level: ILevel): void;
+}
+
+class Area implements IArea {
+  // implement getters for fields and 'add/remove level' methods
+  _levels : Array<ILevel> = [];
+  _name : string ;
+  _fields : unknown ;
+
+  constructor(name) {
     this._name = name;
   }
 
-  get name():string {
-    return this._name;
+  get fields():unknown {
+    return this._fields;
   }
 
-  addLevel(level:number|string):void {
-    this.levels.push(level);
-  }
-}
-
-class Level {
-  groups : Array<unknown> = [];
-  name:string;
-  _name:string;
-  _program:string;
-
-  constructor(name:string, program:string) {
-    this.name = name;
-    this._program = program;
+  addLevel(level:ILevel):void{
+    this._levels.push(level);
   }
 
-  get getName():string {
-    return this._name;
-  }
-
-  get program():string {
-    return this._program;
-  }
-
-  addGroup(group:unknown):void {
-    this.groups.push(group);
+  removeLevel(level:Level):void {
+    if (this._levels.includes(level)) {
+      this._levels.slice(this._levels.indexOf(level),1);
+    }
   }
 }
 
-class Group {
-  _students : Array <Student> = [];
-  levelName:string;
+interface ILevel {
+  _description : string;
+  _fields : unknown;
+  _groups : string;
+  _name : string;
+
+  constructor(name:string, description:string):void;
+
+  get fields():unknown;
+
+  addGroup(group:string):void;
+
+  removeGroup(group:string):void;
+}
+
+class Level implements ILevel {
+  // implement getters for fields and 'add/remove group' methods
+  _description : string;
+  _fields : unknown;
+  _groups : string;
+  _name : string;
+
+  constructor(name:string, description:string) {
+    this._name = name;
+    this._description = description;
+  }
+
+  get fields():unknown {
+    return this._fields;
+  }
+
+  addGroup(group:string):void{
+    this._groups.concat(group);
+  }
+
+  removeGroup(group:string):void {
+    if (this._groups.includes(group)) {
+      this._groups.slice(this._groups.indexOf(group),1);
+    }
+  }
+}
+
+
+interface Sortable {
+  toSorted(): void;
+}
+
+class MySortableArray implements Sortable {
+  data: IStudent [];
+
+  constructor(data: IStudent[]) {
+    this.data = data;
+  }
+
+  toSorted(): void {
+    this.data.sort((a:Student , b:Student) => a - b);
+  }
+}
+
+interface IGroup {
+  _area : IArea;
+  _fields : unknown;
+  _status : string[];
+  _students : Array<IStudent> ;
   directionName:string;
+  levelName:string;
+
+  constructor(directionName:string, levelName:string):void;
+
+  get fields():unknown;
+
+  addStudent(student:Student):void;
+
+  removeStudent(student:Student):void;
+
+  showPerformance():void;
+
+  set status(value:string):void;
+}
+
+class Group implements IGroup {
+  // implement getters for fields and 'add/remove student' and 'set status' methods
+
+  _area : IArea;
+  _fields : unknown;
+  _status : string[];
+  _students : IStudent [] = []; // Modify the array so that it has a valid toSorted method*
+  directionName:string;
+  levelName:string;
 
   constructor(directionName:string, levelName:string) {
     this.directionName = directionName;
     this.levelName = levelName;
   }
 
-  get students():Array<Student> {
-    return this._students;
+  get fields():unknown {
+    return this._fields;
   }
 
   addStudent(student:Student):void {
-    this._students.push(student);
+    this._students.push(student)
   }
 
-  showPerformance():Array<Student> {
-    const sortedStudents = this.students.sort(
-      (a:Student , b:Student):any => b.getPerformanceRating() - a.getPerformanceRating()
-    );
+  removeStudent(student:Student):void {
+    if (this._students.includes(student)) {
+      this._students.slice(this._students.indexOf(student),1);
+    }
+  }
 
-    return sortedStudents;
+  showPerformance():void {
+    const sortedStudents:MySortableArray = new MySortableArray(this._students);
+    //const sortedStudents = this._students.sort((a:any, b:any) => b.getPerformanceRating() - a.getPerformanceRating()) ;
+    return sortedStudents.toSorted();
+  }
+
+  set status(value:string) {
+    this._status.push(value);
   }
 }
 
-class Student {
-  grades : {[subject: string]: number} = {};
-  attendance : Array<boolean> = [];
-  firstName:string;
-  lastName:string;
-  birthYear:number;
+interface GradesContent {
+  [index:string]:number;
+}
 
-  constructor(firstName:string,lastName:string,birthYear:number) {
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.birthYear = birthYear;
+interface VisitsContent {
+  [index:string]:string;
+}
+
+interface IStudent {
+  _firstName:string;
+  _lastName:string;
+  _birthYear:number;
+  _grades:Array<GradesContent>;
+  _visits:Array<VisitsContent>;
+
+  constructor(firstName, lastName, birthYear):void;
+
+  get fullName():string;
+
+  set fullName(value:string):void;
+
+  get age():number;
+
+  getPerformanceRating():number;
+}
+
+class Student implements IStudent {
+  // implement 'set grade' and 'set visit' methods
+
+  _firstName:string;
+  _lastName:string;
+  _birthYear:number;
+  _grades:Array<GradesContent> = []; // workName: mark
+  _visits:Array<VisitsContent> = []; // lesson: present
+
+  constructor(firstName, lastName, birthYear) {
+    this._firstName = firstName;
+    this._lastName = lastName;
+    this._birthYear = birthYear;
   }
 
   get fullName():string {
-    return `${this.lastName} ${this.firstName}`;
+    return `${this._lastName} ${this._firstName}`;
   }
 
   set fullName(value:string) {
-    [this.lastName, this.firstName] = value.split(" ");
+    [this._lastName, this._firstName] = value.split(' ');
   }
 
   get age():number {
-    return new Date().getFullYear() - this.birthYear;
-  }
-
-  setGrade(subject:string, grade:number) {
-    this.grades[subject] = grade;
-  }
-
-  markAttendance(present:boolean):void {
-    this.attendance.push(present);
+    return new Date().getFullYear() - this._birthYear;
   }
 
   getPerformanceRating():number {
-    const gradeValues = Object.values(this.grades);
+    const gradeValues:number[] = Object.values(this._grades);
 
-    if (gradeValues.length === 0) return 0;
+    if (!gradeValues.length) return 0;
 
-    const averageGrade =
-      gradeValues.reduce((sum:number, grade:number):any => sum + grade, 0) / gradeValues.length;
-
-    const attendancePercentage =
-      (this.attendance.filter((present:boolean):any => present).length /
-        this.attendance.length) *
-      100;
+    const averageGrade:number = gradeValues.reduce((sum:number , grade:number ) => sum + grade, 0) / gradeValues.length;
+    const attendancePercentage:number = (this._visits.filter(present => present).length / this._visits.length) * 100;
 
     return (averageGrade + attendancePercentage) / 2;
   }
 }
-
-const newStudent = new Student('Andrii','Dobronos',2000)
-console.log(newStudent)

@@ -38,10 +38,6 @@ interface IArea {
   _name: string;
   _fields: unknown;
 
-  constructor(name: string): void;
-
-  get fields(): unknown;
-
   addLevel(level: ILevel): void;
 
   removeLevel(level: ILevel): void;
@@ -65,7 +61,7 @@ class Area implements IArea {
     this._levels.push(level);
   }
 
-  removeLevel(level:Level):void {
+  removeLevel(level:ILevel):void {
     if (this._levels.includes(level)) {
       this._levels.slice(this._levels.indexOf(level),1);
     }
@@ -77,10 +73,6 @@ interface ILevel {
   _fields : unknown;
   _groups : string;
   _name : string;
-
-  constructor(name:string, description:string):void;
-
-  get fields():unknown;
 
   addGroup(group:string):void;
 
@@ -127,7 +119,7 @@ class MySortableArray implements Sortable {
   }
 
   toSorted(): void {
-    this.data.sort((a:Student , b:Student) => a - b);
+    this.data.sort((a:any , b:any) => a - b);
   }
 }
 
@@ -139,17 +131,11 @@ interface IGroup {
   directionName:string;
   levelName:string;
 
-  constructor(directionName:string, levelName:string):void;
-
-  get fields():unknown;
-
   addStudent(student:Student):void;
 
   removeStudent(student:Student):void;
 
   showPerformance():void;
-
-  set status(value:string):void;
 }
 
 class Group implements IGroup {
@@ -171,11 +157,11 @@ class Group implements IGroup {
     return this._fields;
   }
 
-  addStudent(student:Student):void {
+  addStudent(student:IStudent):void {
     this._students.push(student)
   }
 
-  removeStudent(student:Student):void {
+  removeStudent(student:IStudent):void {
     if (this._students.includes(student)) {
       this._students.slice(this._students.indexOf(student),1);
     }
@@ -206,14 +192,6 @@ interface IStudent {
   _birthYear:number;
   _grades:Array<GradesContent>;
   _visits:Array<VisitsContent>;
-
-  constructor(firstName, lastName, birthYear):void;
-
-  get fullName():string;
-
-  set fullName(value:string):void;
-
-  get age():number;
 
   getPerformanceRating():number;
 }
@@ -246,11 +224,11 @@ class Student implements IStudent {
   }
 
   getPerformanceRating():number {
-    const gradeValues:number[] = Object.values(this._grades);
+    const gradeValues:any = Object.values(this._grades);
 
     if (!gradeValues.length) return 0;
 
-    const averageGrade:number = gradeValues.reduce((sum:number , grade:number ) => sum + grade, 0) / gradeValues.length;
+    const averageGrade:number = gradeValues.reduce((sum, grade)=> sum + grade, 0) / gradeValues.length;
     const attendancePercentage:number = (this._visits.filter(present => present).length / this._visits.length) * 100;
 
     return (averageGrade + attendancePercentage) / 2;

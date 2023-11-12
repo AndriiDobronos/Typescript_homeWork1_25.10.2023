@@ -1,79 +1,119 @@
-//Уявімо, що ми розробляємо платіжну систему. Бекенд розробники віддали
-// нам ендпоінт, на який потрібно відправити наступну інформацію:
-// {
-//   "sum": 10000,
-//     "from": 2,
-//     "to": 4
-// }
-//У відповідь сервер надішле один з наступних варіантів (при успіху або провалі)
+//Створіть класи Circle, Rectangle, Square і Triangle.
+// У кожного з них є загальнодоступний метод calculateArea.
+// У кожної фігури є загальнодоступні властивості - колір
+// і назва, які не можна змінювати після створення.
+// У Square і Rectangle зі свого боку є ще додатковий метод
+// print, який виводить рядок із формулою розрахунку площі.
 
-// In case of success
-// {
-//   "status": "success",
-//     "data": {
-//   "databaseId": 567,
-//       "sum": 10000,
-//       "from": 2,
-//       "to": 4
-// }
-// },
 
-// In case of fail
-// {
-//   "status": "failed",
-//     "data": {
-//   "errorMessage": "Недостаточно средств",
-//       "errorCode": 4
-// }
-// }
-//Нам потрібно створити інтерфейси для об'єктів реквесту та обох варіантів респонсу.
-// Будьте уважні, старайтеся не допускати дублювання та використовуйте знання, набуті
-// на попередніх лекціях.
-// P.S: Не треба робити реалізацію запиту на бекенд, створювати додаткову логіку і тд.
-// В рамках цього завдання ми вчимося працювати з абстракціями
+abstract class Shape {
+    protected constructor(
+        public readonly name: string,
+        public readonly color: string,
+    ) {}
 
-interface IPayData {
-    "sum": number;
-     "from": number;
-     "to": number;
+    public calculateArea(): number {
+        return 1
+    };
 }
 
-const payData : IPayData = {
-    "sum": 10000,
-    "from": 2,
-    "to": 4
+//Можно створювати та імплементувати а можно і без нього ,поля підтягнуться
+// з абстрактного класу.
+interface IShape {
+    name: string ;
+    color: string;
+    calculateArea():number ;
 }
 
-type TResponse = "success" | "failed";
-
-interface IResponseData extends IPayData {
-    "databaseId" : number;
+interface ICircle {
+    circleArea:number;
 }
 
-interface IFailedResponseData {
-    "errorMessage": "Недостаточно средств";
-    "errorCode": 4;
-}
-
-interface IResponse  {
-    "status": TResponse ;
-     "data": IResponseData | IFailedResponseData;
-}
-
-const responseSuccess : IResponse = {
-     "status": "success",
-     "data": {
-       "databaseId": 567,
-       "sum": 10000,
-       "from": 2,
-       "to": 4
-   }
-}
-
-const responseFailed : IResponse = {
-    "status": "failed",
-    "data": {
-        "errorMessage": "Недостаточно средств",
-        "errorCode": 4,
+class Circle extends Shape implements IShape,ICircle {
+    constructor(public readonly name: string,
+                public readonly color: string,
+                private radius:number,
+    ) {
+        super( name, color)
     }
+    calculateArea(r:number = this.radius):number {
+        return Math.PI*Math.pow(r,2)
+    }
+    circleArea:number = this.calculateArea()
 }
+
+const circle = new Circle("bigCircle","yellow",6)
+console.log(circle,circle.circleArea)
+
+interface IRectangle {
+    rectangleArea:number ;
+    print():string ;
+}
+
+class Rectangle extends Shape implements IShape,IRectangle {
+    constructor(public readonly name: string,
+                public readonly color: string,
+                private sideA:number,
+                private sideB: number
+    ) {
+        super( name, color)
+    }
+    calculateArea(a:number=this.sideA ,b:number=this.sideB ):number {
+        return (a*b) ;
+    }
+    print():string {
+        return "RectangleArea = sideA * sideB"
+    };
+    rectangleArea:number =  this.calculateArea()
+}
+
+const rectangle = new Rectangle("bigRectangle","red",6,7)
+console.log(rectangle,rectangle.rectangleArea)
+
+interface ISquare {
+    squareArea:number;
+    print():string ;
+}
+
+class Square extends Shape implements IShape,ISquare {
+    constructor(public readonly name: string,
+                public readonly color: string,
+                private sideLength:number
+    ) {
+        super( name, color)
+    }
+
+    calculateArea(c:number=this.sideLength):number {
+        return (Math.pow(c,2)) ;
+    }
+
+    print():string {
+        return "SquareArea = Math.pow(sideLength,2) "
+    };
+    squareArea:number = this.calculateArea()
+}
+
+const square = new Square("bigSquare","green",7)
+console.log(square ,square.calculateArea())
+
+interface ITriangle {
+    triangleArea:number ;
+}
+
+class Triangle extends Shape implements IShape,ITriangle {
+    constructor(public readonly name: string,
+                public readonly color: string,
+                private sideA:number,
+                private sideB:number,
+                private sizeOfAngle:number,
+    ) {
+        super( name, color)
+    }
+    calculateArea(a:number = this.sideA,b:number = this.sideB,c:number = this.sizeOfAngle):number {
+        return ((a*b)/2)*(Math.sin(c*0.0174533))
+    }
+    triangleArea:number = this.calculateArea()
+}
+
+const triangle = new Triangle("bigTriangle","blue",6,7,45)
+console.log(triangle,triangle.triangleArea)

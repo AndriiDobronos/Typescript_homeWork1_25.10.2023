@@ -5,6 +5,11 @@
 // У Square і Rectangle зі свого боку є ще додатковий метод
 // print, який виводить рядок із формулою розрахунку площі.
 
+interface IShape {
+    name: string ;
+    color: string;
+    calculateArea():number ;
+}
 
 abstract class Shape {
     protected constructor(
@@ -17,19 +22,11 @@ abstract class Shape {
     };
 }
 
-//Можно створювати та імплементувати а можно і без нього ,поля підтягнуться
-// з абстрактного класу.
-interface IShape {
-    name: string ;
-    color: string;
-    calculateArea():number ;
-}
-
-interface ICircle {
+interface ICircle extends IShape {
     circleArea:number;
 }
 
-class Circle extends Shape implements IShape,ICircle {
+class Circle extends Shape implements ICircle {
     constructor(public readonly name: string,
                 public readonly color: string,
                 private radius:number,
@@ -45,12 +42,15 @@ class Circle extends Shape implements IShape,ICircle {
 const circle = new Circle("bigCircle","yellow",6)
 console.log(circle,circle.circleArea)
 
-interface IRectangle {
-    rectangleArea:number ;
-    print():string ;
+interface IPrintable {
+    print():string;
 }
 
-class Rectangle extends Shape implements IShape,IRectangle {
+interface IRectangle extends IShape,IPrintable {
+    rectangleArea:number ;
+}
+
+class Rectangle extends Shape implements IRectangle {
     constructor(public readonly name: string,
                 public readonly color: string,
                 private sideA:number,
@@ -70,12 +70,11 @@ class Rectangle extends Shape implements IShape,IRectangle {
 const rectangle = new Rectangle("bigRectangle","red",6,7)
 console.log(rectangle,rectangle.rectangleArea)
 
-interface ISquare {
+interface ISquare extends IShape,IPrintable {
     squareArea:number;
-    print():string ;
 }
 
-class Square extends Shape implements IShape,ISquare {
+class Square extends Shape implements ISquare {
     constructor(public readonly name: string,
                 public readonly color: string,
                 private sideLength:number
@@ -96,11 +95,11 @@ class Square extends Shape implements IShape,ISquare {
 const square = new Square("bigSquare","green",7)
 console.log(square ,square.calculateArea())
 
-interface ITriangle {
+interface ITriangle extends IShape {
     triangleArea:number ;
 }
 
-class Triangle extends Shape implements IShape,ITriangle {
+class Triangle extends Shape implements ITriangle {
     constructor(public readonly name: string,
                 public readonly color: string,
                 private sideA:number,

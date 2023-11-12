@@ -13,8 +13,8 @@ interface IShape {
 
 abstract class Shape {
     protected constructor(
-        public readonly name: string,
-        public readonly color: string,
+        public readonly name: string = "Shape",
+        public readonly color: string = "transparent",
     ) {}
 
     public calculateArea(): number {

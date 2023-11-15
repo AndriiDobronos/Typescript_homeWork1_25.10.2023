@@ -48,7 +48,8 @@ interface IIndexSignatureObject {
     [key: string]: any;
 }
 
-function areValuesNumbers(obj: IIndexSignatureObject, keys: string[]): boolean {
+function areValuesNumbers(obj: IIndexSignatureObject): boolean {
+    const keys = Object.keys(obj);
     for (const key of keys) {
         if (typeof obj[key] !== 'number') {
             return false;
